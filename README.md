@@ -37,7 +37,7 @@ Many websites contain long articles and documentation that are difficult to anal
 - **Summarization** — OpenAI `gpt-3.5-turbo` abstractive summary when `OPENAI_API_KEY` is set; otherwise TF-IDF extractive top sentences.
 - **Comparative Analysis** — Compare 2–3 URLs: readability, sentiment, shared vs unique keywords, topic overlap (`POST /compare` and Streamlit section). Implemented in `src/analysis/comparator.py` (optional module; removing that file disables `/compare` only).
 - **Visualizations** — Streamlit: Plotly radar chart for readability, pie chart for sentiment mix, word cloud for TF-IDF keywords, grouped bars for comparisons.
-- **Q&A Chatbot** — After analysis, ask questions about the scraped text via OpenAI (`POST /chat` and Streamlit chat). Disabled messaging when no API key.
+- **Q&A Chatbot** — After analysis, ask questions about the scraped text via OpenAI (`POST /chat` and Streamlit). The UI opens a **dialog** (“Ask” / sidebar) that stays open across follow-up messages; answers use the extracted text and page title as context (long pages are truncated with a clear note). Requires `OPENAI_API_KEY`.
 - **Named Entity Recognition** — Identifies people, organizations, locations, dates, and other entities using spaCy.
 - **REST API** — FastAPI backend with Swagger UI documentation at `/docs`.
 - **Streamlit UI** — Interactive web interface for analysis, comparison, and chat.
@@ -88,7 +88,7 @@ User → Streamlit UI / API Request
 | Visualizations      | Plotly, matplotlib, wordcloud     |
 | Configuration       | python-dotenv                     |
 | REST API            | FastAPI + Uvicorn                 |
-| UI                  | Streamlit                         |
+| UI                  | Streamlit (≥ 1.39; dialogs for Q&A) |
 | Testing             | pytest                            |
 | Containerization    | Docker + Docker Compose           |
 
@@ -102,8 +102,8 @@ User → Streamlit UI / API Request
 ### Step 1: Clone the Repository
 
 ```bash
-git clone <YOUR_GITHUB_URL_HERE>
-cd web-content-analyzer
+git clone https://github.com/maunil00323429/scrapper.git
+cd scrapper
 ```
 
 ### Step 2: Create a Virtual Environment (Recommended)
@@ -222,7 +222,7 @@ Analyze **2–3** URLs with the same optional `num_topics` / `top_keywords` as `
 
 ### `POST /chat`
 
-Ask a question about a page’s content. The server fetches the URL, then calls OpenAI with the page text as context.
+Ask a question about a page’s content. The server fetches the URL, then calls OpenAI with the extracted text and **page title** as structured context (same framing as the Streamlit chatbot).
 
 **Request body:** `{ "url": "https://...", "question": "...", "conversation_history": [{ "role": "user", "content": "..." }] }`
 
@@ -263,7 +263,7 @@ docker run -p 8000:8000 web-analyzer
 ## Project Structure
 
 ```
-web-content-analyzer/
+scrapper/
 ├── src/
 │   ├── __init__.py
 │   ├── scraper/
