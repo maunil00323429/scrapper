@@ -2,7 +2,7 @@
 
 An NLP-powered system that extracts meaningful text from public web pages and analyzes it for **keywords**, **topics**, **readability**, **sentiment**, and **summaries**, with optional **multi-URL comparison** and **Q&A** over page content.
 
-**GitHub Repository:** `<YOUR_GITHUB_URL_HERE>`
+**GitHub Repository:** [https://github.com/maunil00323429/scrapper](https://github.com/maunil00323429/scrapper)
 
 **Team:** Sudbury AI Solutions (DataScrapers)
 
